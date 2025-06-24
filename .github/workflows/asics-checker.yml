@@ -28,8 +28,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm config set registry https://registry.npmjs.org/
-          rm -rf ~/.npmrc
-          npm install
+          npm install --no-package-lock
 
       - name: Run asics-checker
         env:
