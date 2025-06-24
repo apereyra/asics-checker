@@ -2,8 +2,8 @@ name: Run Asics Checker
 
 on:
   schedule:
-    - cron: "0 */2 * * *"
-  workflow_dispatch:
+    - cron: "0 */2 * * *"  # Ejecutar cada 2 horas
+  workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
 
 jobs:
   check-resolution:
@@ -13,25 +13,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # ⚠️ NO usamos actions/setup-node
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
 
-      - name: Install Node manually
+      - name: Configure npm
         run: |
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          node -v
-          npm -v
-
-      - name: Clean .npmrc
-        run: |
-          rm -f ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
-          echo "always-auth=false" >> ~/.npmrc
+          npm config set registry https://registry.npmjs.org/
+          npm config delete //registry.npmjs.org/:_authToken
+          npm config list
 
       - name: Install dependencies
-        run: npm install
-        env:
-          NPM_CONFIG_USERCONFIG: ~/.npmrc
+        run: npm ci
 
       - name: Run asics-checker
         env:
