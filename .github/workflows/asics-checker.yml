@@ -2,8 +2,8 @@ name: Run Asics Checker
 
 on:
   schedule:
-    - cron: "0 */2 * * *"  # Ejecutar cada 2 hora
-  workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
 
 jobs:
   check-resolution:
@@ -17,25 +17,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org' 
 
-      - name: Clean npm auth
+      # 💥 Este paso neutraliza el error E401
+      - name: Clean .npmrc
         run: |
-          # Borra el .npmrc que setup-node dejó en el workspace
-          rm -f "$GITHUB_WORKSPACE/.npmrc"
-          # Crea uno nuevo, mínimo, sólo con el registry público
-          echo "registry=https://registry.npmjs.org/" > "$HOME/.npmrc"
-          echo "always-auth=false" >> "$HOME/.npmrc"
+          echo "registry=https://registry.npmjs.org/" > $HOME/.npmrc
+          echo "always-auth=false" >> $HOME/.npmrc
         env:
-          # apunta la variable a nuestro .npmrc limpio
-          NPM_CONFIG_USERCONFIG: $HOME/.npmrc
-          NODE_AUTH_TOKEN: ""           # por si quedara exportado
+          NODE_AUTH_TOKEN: ""  # vaciamos por si quedó exportado
 
       - name: Install dependencies
+        run: npm ci
         env:
-          # usa explícitamente el .npmrc limpio
-          NPM_CONFIG_USERCONFIG: $HOME/.npmrc
-        run: npm ci                      # o  npm install
+          NPM_CONFIG_USERCONFIG: $HOME/.npmrc  # forzamos npm a usar solo ese .npmrc
 
       - name: Run asics-checker
         env:
