@@ -28,7 +28,11 @@ jobs:
       - name: Install dependencies
         run: |
           npm config set registry https://registry.npmjs.org/
-          npm install --no-package-lock
+          npm config delete //registry.npmjs.org/:_authToken || true
+          rm -rf ~/.npmrc || true
+          rm -rf ~/.npm || true
+          npm cache clean --force
+          npm install
 
       - name: Run asics-checker
         env:
