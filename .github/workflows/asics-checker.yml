@@ -2,7 +2,7 @@ name: Run Asics Checker
 
 on:
   schedule:
-    - cron: "0 */2 * * *"  # Ejecutar cada 2 horas
+    - cron: "*/3 * * * *"  # Ejecutar cada 2 horas
   workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
 
 jobs:
