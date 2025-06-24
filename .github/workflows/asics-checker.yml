@@ -17,22 +17,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org/'
-
-      - name: Configure npm
-        run: |
-          npm config set registry https://registry.npmjs.org/
-          npm config delete //registry.npmjs.org/:_authToken
-          npm config list
 
       - name: Install dependencies
-        run: |
-          npm config set registry https://registry.npmjs.org/
-          npm config delete //registry.npmjs.org/:_authToken || true
-          rm -rf ~/.npmrc || true
-          rm -rf ~/.npm || true
-          npm cache clean --force
-          npm install
+        run: npm install
 
       - name: Run asics-checker
         env:
