@@ -19,14 +19,23 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org' 
 
-      - name: Use public npm registry
+      - name: Clean npm auth
         run: |
-          rm -f ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
-          echo "always-auth=false" >> ~/.npmrc
+          # Borra el .npmrc que setup-node dejó en el workspace
+          rm -f "$GITHUB_WORKSPACE/.npmrc"
+          # Crea uno nuevo, mínimo, sólo con el registry público
+          echo "registry=https://registry.npmjs.org/" > "$HOME/.npmrc"
+          echo "always-auth=false" >> "$HOME/.npmrc"
+        env:
+          # apunta la variable a nuestro .npmrc limpio
+          NPM_CONFIG_USERCONFIG: $HOME/.npmrc
+          NODE_AUTH_TOKEN: ""           # por si quedara exportado
 
       - name: Install dependencies
-        run: npm ci
+        env:
+          # usa explícitamente el .npmrc limpio
+          NPM_CONFIG_USERCONFIG: $HOME/.npmrc
+        run: npm ci                      # o  npm install
 
       - name: Run asics-checker
         env:
