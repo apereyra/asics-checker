@@ -1,6 +1,9 @@
 name: Run Asics Checker
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: "*/3 * * * *"  # Ejecutar cada 2 horas
   workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
@@ -17,9 +20,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+                ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -d node_modules ] && [ "$(ls -A node_modules)" ]; then
+            echo "✔️ node_modules ya está cacheado"
+          else
+            npm ci
+          fi
 
       - name: Run asics-checker
         env:
