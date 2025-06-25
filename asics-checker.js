@@ -15,7 +15,7 @@ async function main() {
     const data = await res.json();
 
     const text = JSON.stringify(data).toLowerCase();
-    const found = text.includes("nimbus");
+    const found = text.includes("resolution");
 
     if (found) {
       await sendTelegramMessage("👟 ¡Encontré un modelo con 'resolution' en la tienda de Asics!");
