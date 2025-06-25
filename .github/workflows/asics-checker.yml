@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "*/3 * * * *"  # Ejecutar cada 2 horass
+    - cron: "*/20 * * * *"  # Ejecutar 
   workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
 
 jobs:
