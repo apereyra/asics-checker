@@ -10,6 +10,8 @@ const API_URL = 'https://www.asics.com.ar/_v/segment/graphql/v1?workspace=master
 
 async function main() {
   try {
+    console.log("Iniciando asics-checher.js");
+    await sendTelegramMessage("👟 Iniciando asics-checher.js");
     const res = await fetch(API_URL);
     const data = await res.json();
 
